@@ -5,14 +5,14 @@ from pix2pix.utils.model import Pix2Pix
 from pix2pix.utils.dataset import train_pipeline, test_pipeline
 
 flags.DEFINE_integer('buffer_size', 100, 'size of buffer')
-flags.DEFINE_integer('width', 416, 'width of resulting images')
-flags.DEFINE_integer('height', 416, 'height of resulting images')
+flags.DEFINE_integer('width', 256, 'width of resulting images')
+flags.DEFINE_integer('height', 256, 'height of resulting images')
 flags.DEFINE_float('lambda_p', 100, 'lambda parameter')
 flags.DEFINE_integer('epochs', 100, 'Number of epochs to train from', short_name='e')
 flags.DEFINE_string('checkpoint', 'pix2pix/checkpoint/', 'Checkpoint directory')
-flags.DEFINE_string('training_dir', 'input/training/', 'Path for training samples', short_name='train')
-flags.DEFINE_string('testing_dir', 'input/testing/', 'Path for testing samples', short_name='test')
-flags.DEFINE_bool('restore_check', True, 'Restore last checkpoint in folder --checkpoint')
+flags.DEFINE_string('training_dir', 'input/training/prueba/', 'Path for training samples', short_name='train')
+flags.DEFINE_string('testing_dir', 'input/testing/prueba/', 'Path for testing samples', short_name='test')
+flags.DEFINE_bool('restore_check', False, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
 
 # BUFFER_SIZE = 100
 # BATCH_SIZE = 1

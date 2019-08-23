@@ -25,6 +25,9 @@ class Pix2Pix:
         else:
             print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
 
+        if not os.path.exists('pix2pix/output/'):
+            os.mkdir('pix2pix/output/')
+
 
     @staticmethod
     def downsample(filters, size, apply_batchnorm=True):
