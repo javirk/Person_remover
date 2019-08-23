@@ -5,7 +5,7 @@ import tensorflow as tf
 from yolo.yolov3.dataset import transform_images
 
 image = 'input/training/images/_-6wpIfarPnFg-9RN4Y1mA.jpg'
-classes='./yolo/data/coco.names'
+classes = './yolo/data/coco.names'
 size = 416
 class_names = [c.strip() for c in open(classes).readlines()]
 

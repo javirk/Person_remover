@@ -1,6 +1,5 @@
 import tensorflow as tf
 from random import triangular, randint
-import matplotlib.pyplot as plt
 import numpy as np
 
 def load(image_file):
@@ -40,7 +39,7 @@ def remove_portion(image_file, x_dim, y_dim):
 
     return image_file
 
-def load_image(image_file, height=256, width=256):
+def load_image(image_file, width=256, height=256):
     real_image = load(image_file)
     real_image = resize(real_image, height, width)
     real_image = normalize(real_image)
@@ -48,23 +47,19 @@ def load_image(image_file, height=256, width=256):
 
     return input_image, real_image
 
-def train_pipeline(PATH, BUFFER_SIZE):
+def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT):
     train_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
-    train_dataset = train_dataset.map(load_image,
+    train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH),
                                       num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    # train_dataset = train_dataset.map(load_image)
     train_dataset = train_dataset.cache().shuffle(BUFFER_SIZE)
     train_dataset = train_dataset.batch(1)
 
     return train_dataset
 
-def test_pipeline(PATH):
+def test_pipeline(PATH, WIDTH, HEIGHT):
     test_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
-    test_dataset = test_dataset.map(load_image)
+    test_dataset = test_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH))
+    # test_dataset = test_dataset.map(load_image)
     test_dataset = test_dataset.batch(1)
 
     return test_dataset
-
-if __name__ == '__main__':
-    image = '../../input/training/images/_-6wpIfarPnFg-9RN4Y1mA.jpg'
-    input_im, real_image = load_image(image)

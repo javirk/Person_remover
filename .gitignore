@@ -3,4 +3,5 @@
 *.weights
 pix2pix/checkpoint/
 yolo/checkpoints/
-input/
+input/*
+.idea/

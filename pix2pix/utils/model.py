@@ -4,7 +4,7 @@ import os
 import matplotlib.pyplot as plt
 
 class Pix2Pix:
-    def __init__(self, train_dataset, test_dataset, LAMBDA, epochs, checkpoint_dir):
+    def __init__(self, train_dataset, test_dataset, LAMBDA, epochs, checkpoint_dir, restore_check):
         self.LAMBDA = LAMBDA
         self.train_ds = train_dataset
         self.test_ds = test_dataset
@@ -15,6 +15,16 @@ class Pix2Pix:
         self.discriminator = self.Discriminator()
         self.checkpoint, self.checkpoint_prefix = self.create_checkpoints(checkpoint_dir)
         self.epochs = epochs
+
+        if restore_check:
+            print(f'The model will be trained for {self.epochs} epochs and will restore last saved checkpoint')
+            try:
+                self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+            except:
+                print('Error while restoring a checkpoint')
+        else:
+            print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
+
 
     @staticmethod
     def downsample(filters, size, apply_batchnorm=True):
