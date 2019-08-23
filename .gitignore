@@ -1,0 +1,6 @@
+*.jpg
+*.png
+*.weights
+pix2pix/checkpoint/
+yolo/checkpoints/
+input/
