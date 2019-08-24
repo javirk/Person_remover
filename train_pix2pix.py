@@ -10,8 +10,8 @@ flags.DEFINE_integer('height', 256, 'height of resulting images')
 flags.DEFINE_float('lambda_p', 100, 'lambda parameter')
 flags.DEFINE_integer('epochs', 100, 'Number of epochs to train from', short_name='e')
 flags.DEFINE_string('checkpoint', 'pix2pix/checkpoint/', 'Checkpoint directory')
-flags.DEFINE_string('training_dir', 'input_2/training/', 'Path for training samples', short_name='train')
-flags.DEFINE_string('testing_dir', 'input_2/testing/', 'Path for testing samples', short_name='test')
+flags.DEFINE_string('training_dir', 'input/training/', 'Path for training samples', short_name='train')
+flags.DEFINE_string('testing_dir', 'input/testing/', 'Path for testing samples', short_name='test')
 flags.DEFINE_bool('restore_check', False, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
 
 def main(_argv):
