@@ -10,19 +10,9 @@ flags.DEFINE_integer('height', 256, 'height of resulting images')
 flags.DEFINE_float('lambda_p', 100, 'lambda parameter')
 flags.DEFINE_integer('epochs', 100, 'Number of epochs to train from', short_name='e')
 flags.DEFINE_string('checkpoint', 'pix2pix/checkpoint/', 'Checkpoint directory')
-flags.DEFINE_string('training_dir', 'input/training/images/', 'Path for training samples', short_name='train')
-flags.DEFINE_string('testing_dir', 'input/testing/images/', 'Path for testing samples', short_name='test')
+flags.DEFINE_string('training_dir', 'input_2/training/', 'Path for training samples', short_name='train')
+flags.DEFINE_string('testing_dir', 'input_2/testing/', 'Path for testing samples', short_name='test')
 flags.DEFINE_bool('restore_check', False, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
-
-# BUFFER_SIZE = 100
-# BATCH_SIZE = 1
-# IMG_WIDTH = 416
-# IMG_HEIGHT = 416
-# LAMBDA = 10
-# EPOCHS = 100
-# PATH_training = '../input/training/prueba/'
-# PATH_testing = '../input/testing/prueba/'
-# checkpoint_dir = '../pix2pix/checkpoint/'
 
 def main(_argv):
     train_dataset = train_pipeline(FLAGS.training_dir, FLAGS.buffer_size, FLAGS.width, FLAGS.height)
