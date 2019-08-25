@@ -39,16 +39,37 @@ def remove_portion(image_file, x_dim, y_dim):
 
     return image_file
 
+def random_crop(image, height, width):
+  cropped_image = tf.image.random_crop(image, size=[height, width, 3])
+
+  return cropped_image
+
+@tf.function()
+def random_jitter(image, height, width):
+  # resizing to 286 x 286 x 3
+  image = resize(image, 286, 286)
+
+  # randomly cropping to 256 x 256 x 3
+  image = random_crop(image, height, width)
+
+  if tf.random.uniform(()) > 0.5:
+        # random mirroring
+        image = tf.image.flip_left_right(image)
+
+  return image
+
 def load_image(image_file, width=256, height=256):
     real_image = load(image_file)
     real_image = resize(real_image, height, width)
+    real_image = random_jitter(real_image, height, width)
     real_image = normalize(real_image)
     input_image = remove_portion(real_image, height, width)
 
     return input_image, real_image
 
-def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT):
+def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n):
     train_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
+    train_dataset = train_dataset.take(n)
     train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH),
                                       num_parallel_calls=tf.data.experimental.AUTOTUNE)
     train_dataset = train_dataset.cache().shuffle(BUFFER_SIZE)
@@ -56,8 +77,9 @@ def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT):
 
     return train_dataset
 
-def test_pipeline(PATH, WIDTH, HEIGHT):
+def test_pipeline(PATH, WIDTH, HEIGHT, n):
     test_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
+    test_dataset = test_dataset.take(int(n * 0.2))
     test_dataset = test_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH))
     # test_dataset = test_dataset.map(load_image)
     test_dataset = test_dataset.batch(1)
