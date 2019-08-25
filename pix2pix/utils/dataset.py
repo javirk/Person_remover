@@ -79,7 +79,7 @@ def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n):
 
 def test_pipeline(PATH, WIDTH, HEIGHT, n):
     test_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
-    test_dataset = test_dataset.take(int(n * 0.2))
+    test_dataset = test_dataset.take(int(n * 0.25))
     test_dataset = test_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH))
     # test_dataset = test_dataset.map(load_image)
     test_dataset = test_dataset.batch(1)

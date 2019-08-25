@@ -13,7 +13,7 @@ flags.DEFINE_string('checkpoint', 'pix2pix/checkpoint/', 'Checkpoint directory')
 flags.DEFINE_string('training_dir', 'input/training/', 'Path for training samples', short_name='train')
 flags.DEFINE_string('testing_dir', 'input/testing/', 'Path for testing samples', short_name='test')
 flags.DEFINE_bool('restore_check', False, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
-flags.DEFINE_integer('num_images', 500, 'Number of images to take from dataset', short_name='n')
+flags.DEFINE_integer('num_images', 400, 'Number of images to take from dataset', short_name='n')
 
 def main(_argv):
     print('Parameters:\n')
