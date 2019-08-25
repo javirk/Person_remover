@@ -17,7 +17,7 @@ flags.DEFINE_integer('num_images', 400, 'Number of images to take from dataset',
 
 def main(_argv):
     print('Parameters:\n')
-    print(f'Image = [{FLAGS.height}x{FLAGS.width}\n')
+    print(f'Image = [{FLAGS.height}x{FLAGS.width}]\n')
     print(f'Lambda = {FLAGS.lambda_p}\n')
     print(f'Number of images = {FLAGS.num_images}\n')
     train_dataset = train_pipeline(FLAGS.training_dir, FLAGS.buffer_size, FLAGS.width, FLAGS.height, FLAGS.num_images)
