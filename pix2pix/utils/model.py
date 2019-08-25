@@ -28,7 +28,6 @@ class Pix2Pix:
         if not os.path.exists('pix2pix/output/'):
             os.mkdir('pix2pix/output/')
 
-
     @staticmethod
     def downsample(filters, size, apply_batchnorm=True):
         initializer = tf.random_normal_initializer(0., 0.02)
@@ -189,7 +188,7 @@ class Pix2Pix:
             # getting the pixel values between [0, 1] to plot it.
             plt.imshow(display_list[i] * 0.5 + 0.5)
             plt.axis('off')
-        plt.savefig(f'output/salida+{epoch}.png')
+        plt.savefig(f'pix2pix/output/salida+{epoch}.png')
         plt.close()
 
     @tf.function
