@@ -5,6 +5,7 @@ from pix2pix.utils.model import Pix2Pix
 from pix2pix.utils.dataset import train_pipeline, test_pipeline
 
 flags.DEFINE_integer('buffer_size', 100, 'size of buffer')
+flags.DEFINE_integer('batch_size', 4, 'size of batch')
 flags.DEFINE_integer('width', 256, 'width of resulting images')
 flags.DEFINE_integer('height', 256, 'height of resulting images')
 flags.DEFINE_float('lambda_p', 100, 'lambda parameter')
@@ -20,7 +21,7 @@ def main(_argv):
     print(f'Image = [{FLAGS.height}x{FLAGS.width}]\n')
     print(f'Lambda = {FLAGS.lambda_p}\n')
     print(f'Number of images = {FLAGS.num_images}\n')
-    train_dataset = train_pipeline(FLAGS.training_dir, FLAGS.buffer_size, FLAGS.width, FLAGS.height, FLAGS.num_images)
+    train_dataset = train_pipeline(FLAGS.training_dir, FLAGS.buffer_size, FLAGS.width, FLAGS.height, FLAGS.num_images, FLAGS.batch_size)
     test_dataset = test_pipeline(FLAGS.testing_dir, FLAGS.width, FLAGS.height, FLAGS.num_images)
 
     p2p = Pix2Pix(train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check)

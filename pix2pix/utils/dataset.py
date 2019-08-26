@@ -23,11 +23,17 @@ def normalize(real_image):
     return real_image
 
 @tf.function
-def remove_portion(image_file, x_dim, y_dim):
-    x_0 = int(triangular(x_dim / 3, x_dim * 4/5))
-    y_0 = int(triangular(0, y_dim * 4/5))
-    w =  int(min(y_dim / 6, randint(20, y_dim - 1 - y_0)))
-    h =  int(max(w, randint(0, x_dim - 1 - x_0)))
+def remove_portion(image_file, x_dim, y_dim, fancy_portion=False):
+    if fancy_portion:
+        x_0 = int(triangular(x_dim / 3, x_dim * 4/5))
+        y_0 = int(triangular(0, y_dim * 4/5))
+        w =  int(min(y_dim / 6, randint(20, y_dim - 1 - y_0)))
+        h =  int(max(w, randint(0, x_dim - 1 - x_0)))
+    else:
+        h = x_dim / 4
+        w = y_dim / 4
+        x_0 = x_dim / 4
+        y_0 = y_dim / 4
 
     a = [[[False if (i < y_0 or i > y_0 + w) or (j < x_0 or j > x_0 + h) else True for _ in range(0,3)] for i in range(0, y_dim)] for j in range(0, x_dim)]
     a_t = tf.constant(a, dtype=tf.double)
@@ -67,13 +73,13 @@ def load_image(image_file, width=256, height=256):
 
     return input_image, real_image
 
-def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n):
+def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n, BATCH_SIZE):
     train_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
     train_dataset = train_dataset.take(n)
     train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH),
                                       num_parallel_calls=tf.data.experimental.AUTOTUNE)
     train_dataset = train_dataset.cache().shuffle(BUFFER_SIZE)
-    train_dataset = train_dataset.batch(1)
+    train_dataset = train_dataset.batch(BATCH_SIZE)
 
     return train_dataset
 
