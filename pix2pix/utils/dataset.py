@@ -4,7 +4,7 @@ import numpy as np
 
 def load(image_file):
     real_image = tf.io.read_file(image_file)
-    real_image = tf.image.decode_jpeg(real_image)
+    real_image = tf.image.decode_png(real_image, channels=3)
 
     real_image = tf.cast(real_image, tf.float32)
 
@@ -74,7 +74,7 @@ def load_image(image_file, width=256, height=256):
     return input_image, real_image
 
 def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n, BATCH_SIZE):
-    train_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
+    train_dataset = tf.data.Dataset.list_files(PATH + '*.png')
     train_dataset = train_dataset.take(n)
     train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH),
                                       num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -84,7 +84,7 @@ def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n, BATCH_SIZE):
     return train_dataset
 
 def test_pipeline(PATH, WIDTH, HEIGHT, n):
-    test_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
+    test_dataset = tf.data.Dataset.list_files(PATH + '*.png')
     test_dataset = test_dataset.take(int(n * 0.25))
     test_dataset = test_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH))
     # test_dataset = test_dataset.map(load_image)
