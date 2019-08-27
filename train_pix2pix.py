@@ -14,7 +14,8 @@ flags.DEFINE_string('checkpoint', 'pix2pix/checkpoint/', 'Checkpoint directory')
 flags.DEFINE_string('training_dir', 'input/Paris/paris_train_original/', 'Path for training samples', short_name='train')
 flags.DEFINE_string('testing_dir', 'input/Paris/paris_eval_gt/', 'Path for testing samples', short_name='test')
 flags.DEFINE_bool('restore_check', False, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
-flags.DEFINE_integer('num_images', 400, 'Number of images to take from dataset', short_name='n')
+flags.DEFINE_integer('num_images', -1, 'Number of images to take from dataset', short_name='n')
+flags.DEFINE_integer('test_samples', 2, 'Number of generated samples for testing')
 
 def main(_argv):
     print('Parameters:\n')
@@ -24,7 +25,7 @@ def main(_argv):
     train_dataset = train_pipeline(FLAGS.training_dir, FLAGS.buffer_size, FLAGS.width, FLAGS.height, FLAGS.num_images, FLAGS.batch_size)
     test_dataset = test_pipeline(FLAGS.testing_dir, FLAGS.width, FLAGS.height, FLAGS.num_images)
 
-    p2p = Pix2Pix(train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check)
+    p2p = Pix2Pix(train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check, FLAGS.test_samples)
     p2p.fit()
 
 if __name__ == '__main__':
