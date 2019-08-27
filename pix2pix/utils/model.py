@@ -170,7 +170,7 @@ class Pix2Pix:
         return generator_optimizer, discriminator_optimizer
 
     @staticmethod
-    def generate_images(model, test_input, tar, epoch):
+    def generate_images(model, test_input, tar, epoch, ex):
         # the training=True is intentional here since
         # we want the batch statistics while running the model
         # on the test dataset. If we use training=False, we will get
@@ -188,7 +188,7 @@ class Pix2Pix:
             # getting the pixel values between [0, 1] to plot it.
             plt.imshow(display_list[i] * 0.5 + 0.5)
             plt.axis('off')
-        plt.savefig(f'pix2pix/output/salida+{epoch}.png')
+        plt.savefig(f'pix2pix/output/salida {epoch}_{ex}.png')
         plt.close()
 
     @tf.function
@@ -202,17 +202,14 @@ class Pix2Pix:
             gen_loss = self.generator_loss(disc_generated_output, gen_output, target)
             disc_loss = self.discriminator_loss(disc_real_output, disc_generated_output)
 
-        generator_gradients = gen_tape.gradient(gen_loss,
-                                                self.generator.trainable_variables)
-        discriminator_gradients = disc_tape.gradient(disc_loss,
-                                                     self.discriminator.trainable_variables)
+        generator_gradients = gen_tape.gradient(gen_loss, self.generator.trainable_variables)
+        discriminator_gradients = disc_tape.gradient(disc_loss, self.discriminator.trainable_variables)
 
-        self.generator_optimizer.apply_gradients(zip(generator_gradients,
-                                                self.generator.trainable_variables))
-        self.discriminator_optimizer.apply_gradients(zip(discriminator_gradients,
-                                                    self.discriminator.trainable_variables))
+        self.generator_optimizer.apply_gradients(zip(generator_gradients, self.generator.trainable_variables))
+        self.discriminator_optimizer.apply_gradients(zip(discriminator_gradients, self.discriminator.trainable_variables))
 
     def fit(self):
+        save_interval = min(20, self.epochs / 4)
         for epoch in range(self.epochs):
             start = time.time()
 
@@ -222,14 +219,18 @@ class Pix2Pix:
 
             # Test on the same image so that the progress of the model can be
             # easily seen.
-            for example_input, example_target in self.test_ds.take(1):
-                self.generate_images(self.generator, example_input, example_target, epoch)
+            for example_input, example_target in self.test_ds.take(2):
+                self.generate_images(self.generator, example_input[0], example_target[0], epoch, 0)
+                self.generate_images(self.generator, example_input[1], example_target[1], epoch, 1)
 
             # saving (checkpoint) the model every 20 epochs
-            if (epoch + 1) % 20 == 0:
+            if (epoch + 1) % save_interval == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
+                print('Model saved\n')
 
             print(f'Time taken for epoch {epoch + 1} is {time.time() - start} sec\n')
+
+        self.checkpoint.save(file_prefix=self.checkpoint_prefix)
 
     def create_checkpoints(self, checkpoint_dir):
         checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
