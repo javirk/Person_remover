@@ -30,10 +30,10 @@ def remove_portion(image_file, x_dim, y_dim, fancy_portion=False):
         w =  int(min(y_dim / 6, randint(20, y_dim - 1 - y_0)))
         h =  int(max(w, randint(0, x_dim - 1 - x_0)))
     else:
-        h = x_dim / 4
-        w = y_dim / 4
-        x_0 = x_dim / 4
-        y_0 = y_dim / 4
+        h = int(x_dim / 2)
+        w = int(y_dim / 2)
+        x_0 = int(x_dim / 4)
+        y_0 = int(y_dim / 4)
 
     a = [[[False if (i < y_0 or i > y_0 + w) or (j < x_0 or j > x_0 + h) else True for _ in range(0,3)] for i in range(0, y_dim)] for j in range(0, x_dim)]
     a_t = tf.constant(a, dtype=tf.double)
