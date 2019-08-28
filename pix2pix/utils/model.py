@@ -221,7 +221,7 @@ class Pix2Pix:
             # Test on the same image so that the progress of the model can be
             # easily seen.
             for example_input, example_target in self.test_ds.take(self.test_samples):
-                for sample in self.test_samples:
+                for sample in range(self.test_samples):
                     self.generate_images(self.generator, example_input[sample], example_target[sample], epoch, sample)
 
             # saving (checkpoint) the model every 20 epochs
