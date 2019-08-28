@@ -67,10 +67,10 @@ def random_jitter(image, height, width):
 
   return image
 
-def load_image(image_file, width=256, height=256, train=False):
+def load_image(image_file, width=256, height=256, jitter=False):
     real_image = load(image_file)
     real_image = resize(real_image, height, width)
-    if train:
+    if jitter:
         real_image = random_jitter(real_image, height, width)
     real_image = normalize(real_image)
     input_image = remove_portion(real_image, height, width)
@@ -80,7 +80,7 @@ def load_image(image_file, width=256, height=256, train=False):
 def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n, BATCH_SIZE):
     train_dataset = tf.data.Dataset.list_files(PATH + '*.JPG')
     train_dataset = train_dataset.take(n)
-    train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH, True),
+    train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH, False),
                                       num_parallel_calls=tf.data.experimental.AUTOTUNE)
     train_dataset = train_dataset.cache().shuffle(BUFFER_SIZE)
     train_dataset = train_dataset.batch(BATCH_SIZE)
@@ -88,7 +88,7 @@ def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n, BATCH_SIZE):
     return train_dataset
 
 def test_pipeline(PATH, WIDTH, HEIGHT, n):
-    test_dataset = tf.data.Dataset.list_files(PATH + '*.png')
+    test_dataset = tf.data.Dataset.list_files(PATH + '*.jpg')
     if n != -1:
         test_dataset = test_dataset.take(int(n * 0.25))
     else:
