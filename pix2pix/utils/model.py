@@ -4,9 +4,8 @@ import os
 import matplotlib.pyplot as plt
 
 class Pix2Pix:
-    def __init__(self, train_dataset, test_dataset, LAMBDA, epochs, checkpoint_dir, restore_check, test_samples):
+    def __init__(self, train_dataset, test_dataset, LAMBDA, epochs, checkpoint_dir, restore_check, test_samples, mode):
         self.LAMBDA = LAMBDA
-        self.train_ds = train_dataset
         self.test_ds = test_dataset
         self.OUTPUT_CHANNELS = 3
         self.loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
@@ -16,18 +15,36 @@ class Pix2Pix:
         self.checkpoint, self.checkpoint_prefix = self.create_checkpoints(checkpoint_dir)
         self.epochs = epochs
         self.test_samples = test_samples
+        self.mode = mode
 
-        if restore_check:
-            print(f'The model will be trained for {self.epochs} epochs and will restore last saved checkpoint')
-            try:
-                self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-            except:
-                print('Error while restoring a checkpoint')
+        if self.mode == 'train':
+            if train_dataset == []:
+                print('No training dataset supplied for train mode.')
+                return
+            self.train_ds = train_dataset
+            if restore_check:
+                print(f'The model will be trained for {self.epochs} epochs and will restore last saved checkpoint')
+                try:
+                    self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+                except:
+                    print('Error while restoring a checkpoint')
+            else:
+                print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
+
         else:
-            print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
+            self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
 
+        self.make_dirs()
+
+    def make_dirs(self):
         if not os.path.exists('pix2pix/output/'):
             os.mkdir('pix2pix/output/')
+        if self.mode == 'train':
+            if not os.path.exists('pix2pix/output/train/'):
+                os.mkdir('pix2pix/output/train/')
+        else:
+            if not os.path.exists('pix2pix/output/test/'):
+                os.mkdir('pix2pix/output/test/')
 
     @staticmethod
     def downsample(filters, size, apply_batchnorm=True):
@@ -170,8 +187,7 @@ class Pix2Pix:
 
         return generator_optimizer, discriminator_optimizer
 
-    @staticmethod
-    def generate_images(model, test_input, tar, epoch, ex):
+    def generate_images(self, model, test_input, tar, epoch, ex):
         # the training=True is intentional here since
         # we want the batch statistics while running the model
         # on the test dataset. If we use training=False, we will get
@@ -189,7 +205,10 @@ class Pix2Pix:
             # getting the pixel values between [0, 1] to plot it.
             plt.imshow(display_list[i] * 0.5 + 0.5)
             plt.axis('off')
-        plt.savefig(f'pix2pix/output/salida {epoch}_{ex}.png')
+        if self.mode == 'train':
+            plt.savefig(f'pix2pix/output/train/salida {epoch}_{ex}.png')
+        else:
+            plt.savefig(f'pix2pix/output/test/salida {epoch}_{ex}.png')
         plt.close()
 
     @tf.function
@@ -243,3 +262,9 @@ class Pix2Pix:
                                          discriminator=self.discriminator)
 
         return checkpoint, checkpoint_prefix
+
+    def test_model(self):
+        i = 0
+        for inp, tar in self.test_ds.take(5):
+            self.generate_images(self.generator, inp, tar, 0, i)
+            i += 1

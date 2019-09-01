@@ -80,7 +80,7 @@ def load_image(image_file, width=256, height=256, jitter=False):
 def train_pipeline(PATH, BUFFER_SIZE, WIDTH, HEIGHT, n, BATCH_SIZE):
     train_dataset = tf.data.Dataset.list_files(PATH + '*.JPG')
     train_dataset = train_dataset.take(n)
-    train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH, True),
+    train_dataset = train_dataset.map(lambda x: load_image(x, HEIGHT, WIDTH, False),
                                       num_parallel_calls=tf.data.experimental.AUTOTUNE)
     train_dataset = train_dataset.cache().shuffle(BUFFER_SIZE)
     train_dataset = train_dataset.batch(BATCH_SIZE)
