@@ -229,7 +229,7 @@ class Pix2Pix:
         self.discriminator_optimizer.apply_gradients(zip(discriminator_gradients, self.discriminator.trainable_variables))
 
     def fit(self):
-        save_interval = min(20, self.epochs / 4)
+        save_interval = min(20, int(self.epochs / 4))
         for epoch in range(self.epochs):
             start = time.time()
 
