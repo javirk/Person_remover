@@ -35,7 +35,7 @@ def main(_argv):
         p2p.fit()
     elif mode == 'test':
         train_dataset = []
-        test_dataset = test_pipeline(FLAGS.training_dir, FLAGS.width, FLAGS.height, FLAGS.num_images)
+        test_dataset = test_pipeline(FLAGS.testing_dir, FLAGS.width, FLAGS.height, FLAGS.num_images)
 
         p2p = Pix2Pix(train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check,
                       FLAGS.test_samples, mode)
