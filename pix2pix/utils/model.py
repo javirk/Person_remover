@@ -2,6 +2,7 @@ import tensorflow as tf
 import time
 import os
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 class Pix2Pix:
     def __init__(self, train_dataset, test_dataset, LAMBDA, epochs, checkpoint_dir, restore_check, test_samples, mode):
@@ -16,6 +17,7 @@ class Pix2Pix:
         self.epochs = epochs
         self.test_samples = test_samples
         self.mode = mode
+        self.save_interval = 10
 
         if self.mode == 'train':
             if train_dataset == []:
@@ -35,6 +37,7 @@ class Pix2Pix:
             self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
 
         self.make_dirs()
+        self.train_summary_writer = self.writers_tensorboard()
 
     def make_dirs(self):
         if not os.path.exists('pix2pix/output/'):
@@ -227,15 +230,18 @@ class Pix2Pix:
 
         self.generator_optimizer.apply_gradients(zip(generator_gradients, self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(zip(discriminator_gradients, self.discriminator.trainable_variables))
+        return gen_loss, disc_loss
 
     def fit(self):
-        save_interval = min(20, int(self.epochs / 4))
         for epoch in range(self.epochs):
             start = time.time()
 
             # Train
             for input_image, target in self.train_ds:
-                self.train_step(input_image, target)
+                gen_loss, disc_loss = self.train_step(input_image, target)
+                with self.train_summary_writer.as_default():
+                    tf.summary.scalar('generator loss', gen_loss, step=epoch)
+                    tf.summary.scalar('discriminator loss', disc_loss, step=epoch)
 
             # Test on the same image so that the progress of the model can be
             # easily seen.
@@ -246,7 +252,7 @@ class Pix2Pix:
                 self.generate_images(self.generator, example_input, example_target, epoch, sample)
 
             # saving (checkpoint) the model every 20 epochs
-            if (epoch + 1) % save_interval == 0:
+            if (epoch + 1) % self.save_interval == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
                 print('Model saved\n')
 
@@ -268,3 +274,10 @@ class Pix2Pix:
         for inp, tar in self.test_ds.take(5):
             self.generate_images(self.generator, inp, tar, 0, i)
             i += 1
+
+    def writers_tensorboard(self):
+        current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
+        train_log_dir = 'pix2pix/logs/' + current_time + '/train'
+        train_summary_writer = tf.summary.create_file_writer(train_log_dir)
+
+        return train_summary_writer

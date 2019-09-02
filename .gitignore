@@ -5,3 +5,4 @@ pix2pix/checkpoint/*
 yolo/checkpoints/*
 input/*
 .idea/
+pix2pix/logs/*

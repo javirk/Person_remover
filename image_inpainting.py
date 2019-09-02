@@ -14,9 +14,9 @@ flags.DEFINE_string('checkpoint', 'pix2pix/checkpoint/', 'Checkpoint directory')
 flags.DEFINE_string('training_dir', 'input/Paris/paris_train_original/', 'Path for training samples', short_name='train')
 flags.DEFINE_string('testing_dir', 'input/Paris/paris_eval/', 'Path for testing samples', short_name='test')
 flags.DEFINE_bool('restore_check', False, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
-flags.DEFINE_integer('num_images', -1, 'Number of images to take from dataset', short_name='n')
+flags.DEFINE_integer('num_images', 100, 'Number of images to take from dataset', short_name='n')
 flags.DEFINE_integer('test_samples', 2, 'Number of generated samples for testing')
-flags.DEFINE_string('mode', 'test', 'Mode: train or test')
+flags.DEFINE_string('mode', 'train', 'Mode: train or test')
 
 def main(_argv):
     print('Parameters:\n')
