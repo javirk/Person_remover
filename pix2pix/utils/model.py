@@ -17,7 +17,7 @@ class Pix2Pix:
         self.epochs = epochs
         self.test_samples = test_samples
         self.mode = mode
-        self.save_interval = 10
+        self.save_interval = 1
 
         if self.mode == 'train':
             if train_dataset == []:
@@ -28,8 +28,9 @@ class Pix2Pix:
                 print(f'The model will be trained for {self.epochs} epochs and will restore last saved checkpoint')
                 try:
                     self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-                except:
+                except Exception as e:
                     print('Error while restoring a checkpoint')
+                    print(e)
             else:
                 print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
 
