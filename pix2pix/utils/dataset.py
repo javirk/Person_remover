@@ -43,7 +43,8 @@ def remove_portion(image_file, x_dim, y_dim, fancy_portion=False):
 
     indices = tf.where(a_t)
     pixels = np.sum(np.array(a))
-    update = tf.zeros((pixels))
+    # update = tf.zeros((pixels))
+    update = tf.ones((pixels))
     image_file = tf.tensor_scatter_nd_update(image_file, indices, update)
 
     return image_file
