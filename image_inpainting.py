@@ -1,4 +1,6 @@
 import tensorflow as tf
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 from absl import flags, app
 from absl.flags import FLAGS
 from pix2pix.utils.model import Pix2Pix
@@ -16,7 +18,7 @@ flags.DEFINE_string('testing_dir', 'input/Paris/paris_eval/', 'Path for testing 
 flags.DEFINE_bool('restore_check', True, 'Restore last checkpoint in folder --checkpoint', short_name='restore')
 flags.DEFINE_integer('num_images', -1, 'Number of images to take from dataset', short_name='n')
 flags.DEFINE_integer('test_samples', 2, 'Number of generated samples for testing')
-flags.DEFINE_string('mode', 'train', 'Mode: train or test')
+flags.DEFINE_string('mode', 'test', 'Mode: train or test')
 
 def main(_argv):
     print('Parameters:\n')
@@ -30,15 +32,15 @@ def main(_argv):
                                        FLAGS.batch_size)
         test_dataset = test_pipeline(FLAGS.testing_dir, FLAGS.width, FLAGS.height, FLAGS.num_images)
 
-        p2p = Pix2Pix(train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check,
-                      FLAGS.test_samples, mode)
+        p2p = Pix2Pix(mode, train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check,
+                      FLAGS.test_samples)
         p2p.fit()
     elif mode == 'test':
         train_dataset = []
         test_dataset = test_pipeline(FLAGS.testing_dir, FLAGS.width, FLAGS.height, FLAGS.num_images)
 
-        p2p = Pix2Pix(train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check,
-                      FLAGS.test_samples, mode)
+        p2p = Pix2Pix(mode, train_dataset, test_dataset, FLAGS.lambda_p, FLAGS.epochs, FLAGS.checkpoint, FLAGS.restore_check,
+                      FLAGS.test_samples)
 
         p2p.test_model()
 

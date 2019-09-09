@@ -5,40 +5,51 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 class Pix2Pix:
-    def __init__(self, train_dataset, test_dataset, LAMBDA, epochs, checkpoint_dir, restore_check, test_samples, mode):
-        self.LAMBDA = LAMBDA
-        self.test_ds = test_dataset
-        self.OUTPUT_CHANNELS = 3
-        self.loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-        self.generator_optimizer, self.discriminator_optimizer = self.optimizers()
-        self.generator = self.Generator()
-        self.discriminator = self.Discriminator()
-        self.checkpoint, self.checkpoint_prefix = self.create_checkpoints(checkpoint_dir)
-        self.epochs = epochs
-        self.test_samples = test_samples
+    def __init__(self, mode, train_dataset=False, test_dataset=False, LAMBDA=100, epochs=25, checkpoint_dir='',
+                 restore_check=False, test_samples=''):
         self.mode = mode
-        self.save_interval = 1
+        self.OUTPUT_CHANNELS = 3
+        if self.mode == 'train' or self.mode == 'test':
+            self.LAMBDA = LAMBDA
+            self.test_ds = test_dataset
+            self.loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+            self.generator_optimizer, self.discriminator_optimizer = self.optimizers()
+            self.generator = self.Generator()
+            self.discriminator = self.Discriminator()
+            self.checkpoint, self.checkpoint_prefix = self.create_checkpoints(checkpoint_dir)
+            self.epochs = epochs
+            self.test_samples = test_samples
+            self.save_interval = 1
 
-        if self.mode == 'train':
-            if train_dataset == []:
-                print('No training dataset supplied for train mode.')
-                return
-            self.train_ds = train_dataset
-            if restore_check:
-                print(f'The model will be trained for {self.epochs} epochs and will restore last saved checkpoint')
-                try:
-                    self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-                except Exception as e:
-                    print('Error while restoring a checkpoint')
-                    print(e)
+            if self.mode == 'train':
+                if not train_dataset:
+                    print('No training dataset supplied for train mode.')
+                    return
+                self.train_ds = train_dataset
+                if restore_check:
+                    print(f'The model will be trained for {self.epochs} epochs and will restore last saved checkpoint')
+                    try:
+                        self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+                    except Exception as e:
+                        print('Error while restoring a checkpoint')
+                        print(e)
+                else:
+                    print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
+
             else:
-                print(f'The model will be trained for {self.epochs} epochs and will not restore last saved checkpoint')
+                self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)).expect_partial()
+
+            self.make_dirs()
+            self.train_summary_writer = self.writers_tensorboard()
 
         else:
-            self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-
-        self.make_dirs()
-        self.train_summary_writer = self.writers_tensorboard()
+            # This is PRODUCTION
+            self.loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+            self.generator_optimizer, self.discriminator_optimizer = self.optimizers()
+            self.generator = self.Generator()
+            self.discriminator = self.Discriminator()
+            self.checkpoint, self.checkpoint_prefix = self.create_checkpoints(checkpoint_dir)
+            self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)).expect_partial()
 
     def make_dirs(self):
         if not os.path.exists('pix2pix/output/'):
@@ -276,7 +287,8 @@ class Pix2Pix:
             self.generate_images(self.generator, inp, tar, 0, i)
             i += 1
 
-    def writers_tensorboard(self):
+    @staticmethod
+    def writers_tensorboard():
         current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
         train_log_dir = 'pix2pix/logs/' + current_time + '/train'
         train_summary_writer = tf.summary.create_file_writer(train_log_dir)
