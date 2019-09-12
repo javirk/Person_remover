@@ -5,3 +5,5 @@ input/*
 .idea/
 pix2pix/logs/*
 *.avi
+yolo/*.png
+yolo/*.jpg

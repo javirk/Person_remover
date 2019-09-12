@@ -16,22 +16,20 @@ que se encarga de detectar los objetos de las imágenes (generando una _bounding
 una Pix2Pix que ha aprendido a rellenar huecos en el centro de las imágenes, tomando como referencia las imágenes sin agujero:
 1. YOLO detecta los objetos
 2. Se toma una subimagen con cada uno de los objetos, añadiendo píxeles a su alrededor
-3. De cada subimagen se elimina a la persona, que se encuentra en el centro, y es enviada al generador de Pix2Pix para 
+3. De cada subimagen se elimina a la persona, que se encuentra en el centro, y posteriormente se envía al generador de Pix2Pix para 
 que rellene a partir de los píxeles que quedan.
 
 Con el objeto de ilustrar el proceso de entrenamiento de Pix2Pix, se pueden observar las siguientes imágenes, en las que
 se ha generado un agujero y el generador ha aprendido a rellenarlo.
-![p2p_fill_1](https://raw.githubusercontent.com/javirk/Person_remover/master/images_readme/salida_23_0.png)
-![p2p_fill_2](https://raw.githubusercontent.com/javirk/Person_remover/master/images_readme/salida_0_0.png)
+![p2p_fill_1](https://github.com/javirk/Person_remover/blob/master/images_readme/salida%2023_0.png)
+![p2p_fill_2](https://github.com/javirk/Person_remover/blob/master/images_readme/salida%200_0.png)
 
 Estas instrucciones te ayudarán a entrenar un modelo en tu máquina local. Sin embargo, los datos de entrenamiento que se han utilizado
 para Pix2Pix [no son públicos](http://graphics.cs.cmu.edu/projects/whatMakesParis/). Este conjunto consta de 14900 imágenes
 256x256x3. El código se encarga de crear un agujero en el centro de las imágenes y aprender a rellenarlo con los datos
 que hay alrededor.
 
-Para YOLO se ha utilizado un modelo preentrenado.
-
-### Prerequisites
+### Requisitos
 
 Para utilizar el programa necesitarás Python 3.7 y los paquetes especificados en el archivo `requirements.txt`.
 
@@ -79,57 +77,40 @@ Para ejecutar el entrenamiento con los parámetros por defecto, tras haber desca
 python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/imagenes/test -mode /test
 ```
 
-
 ## Eliminación en imágenes
 
+![p2p_fill_3](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen6.png)
+![p2p_fill_4](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen7.png)
+![p2p_fill_5](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen1.png)
+![p2p_fill_6](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen2.png)
+![p2p_fill_7](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen3.png)
+![p2p_fill_8](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen4.png)
+![p2p_fill_9](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen5.png)
+![p2p_fill_10](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen8.png)
 
 
-### Break down into end to end tests
+## Eliminación en vídeo
 
-Explain what these tests test and why
+Se ha utilizado un [vídeo de las calles de París](https://www.youtube.com/watch?v=_dRjY9gMcxE). El resultado está disponible
+para su descarga en [este enlace](https://drive.google.com/open?id=1V0i64yh_b3aTlijVbfNEtYNLFiy30QjQ) de Google Drive.
 
-```
-Give an example
-```
+## Próximos pasos
 
-### And coding style tests
+Los resultados se pueden mejorar eliminando la red YOLO (detectora de objetos) por una red segmentadora. Así, el generador 
+solo tendria que rellenar la parte correspondiente a la persona, no toda la _bounding box_. Por motivos de tiempo y capacidad
+de procesamiento no se ha podido realizar.
 
-Explain what these tests test and why
+Modificación de Pix2Pix por una arquitectura más avanzada, como Pix2PixHD.
 
-```
-Give an example
-```
+## Autor
 
-## Deployment
+* **Javier Gamazo** - *Trabajo inicial* - [Github](https://github.com/javirk). [LinkedIn](https://www.linkedin.com/in/javier-gamazo-tejero/)
 
-Add additional notes about how to deploy this on a live system
+## Licencia
 
-## Built With
+Este proyecto tiene licencia MIT. Ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+## Agradecimientos
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* [zzh8829](https://github.com/zzh8829/yolov3-tf2) por el código de YOLO
+* [Tensorflow](https://www.tensorflow.org/) por el código de Pix2Pix
