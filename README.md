@@ -21,8 +21,8 @@ que rellene a partir de los píxeles que quedan.
 
 Con el objeto de ilustrar el proceso de entrenamiento de Pix2Pix, se pueden observar las siguientes imágenes, en las que
 se ha generado un agujero y el generador ha aprendido a rellenarlo.
-![p2p_fill_1](https://github.com/javirk/Person_remover/blob/master/images_readme/salida%2023_0.png)
-![p2p_fill_2](https://github.com/javirk/Person_remover/blob/master/images_readme/salida%200_0.png)
+![p2p_fill_1](https://github.com/javirk/Person_remover/blob/master/images_readme/fill_1.png)
+![p2p_fill_2](https://github.com/javirk/Person_remover/blob/master/images_readme/fill_2.png)
 
 Estas instrucciones te ayudarán a entrenar un modelo en tu máquina local. Sin embargo, los datos de entrenamiento que se han utilizado
 para Pix2Pix [no son públicos](http://graphics.cs.cmu.edu/projects/whatMakesParis/). Este conjunto consta de 14900 imágenes
