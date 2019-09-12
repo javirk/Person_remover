@@ -91,8 +91,10 @@ python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/i
 
 ## Eliminación en vídeo
 
-Se ha utilizado un [vídeo de las calles de París](https://www.youtube.com/watch?v=_dRjY9gMcxE). El resultado está disponible
+Se ha utilizado un [vídeo de las calles de París](https://www.youtube.com/watch?v=_dRjY9gMcxE). El resultado completo está disponible
 para su descarga en [este enlace](https://drive.google.com/open?id=1V0i64yh_b3aTlijVbfNEtYNLFiy30QjQ) de Google Drive.
+
+![p2p_fill_11](https://github.com/javirk/Person_remover/blob/master/images_readme/GIF.gif)
 
 ## Próximos pasos
 
