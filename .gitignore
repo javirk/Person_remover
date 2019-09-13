@@ -7,3 +7,5 @@ pix2pix/logs/*
 *.avi
 yolo/*.png
 yolo/*.jpg
+person_detection.py
+main.ipynb
