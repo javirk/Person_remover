@@ -2,6 +2,8 @@
 
 English version [here](README.md).
 
+¿Te gustaría viajar a un lugar turístico y aparecer solo en las fotos?
+
 _Person remover_ es un proyecto que combina la arquitectura Pix2Pix con Yolo para eliminar a las personas y objetos de 
 las fotos. Para Pix2Pix se ha adaptado el código de [Tensorflow](https://www.tensorflow.org/beta/tutorials/generative/pix2pix), y
 para Yolo, de https://github.com/zzh8829/yolov3-tf2.
