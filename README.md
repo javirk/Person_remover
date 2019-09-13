@@ -1,83 +1,82 @@
 # Person Remover
 
-_Person remover_ es un proyecto que combina la arquitectura Pix2Pix con Yolo para eliminar a las personas y objetos de 
-las fotos. Para Pix2Pix se ha adaptado el código de [Tensorflow](https://www.tensorflow.org/beta/tutorials/generative/pix2pix), y
-para Yolo, de https://github.com/zzh8829/yolov3-tf2.
+Versión en español disponible [aquí](README_es.md).
 
-Este proyecto es capaz de eliminar objetos tanto en imágenes como en vídeo.
+_Person remover_ is a project that combines Pix2Pix and YOLO arhitectures in order to remove people or other objects from
+photos.For Pix2Pix, the code from [Tensorflow](https://www.tensorflow.org/beta/tutorials/generative/pix2pix) has been adapted,
+whereas for YOLO, the code has been adapted from https://github.com/zzh8829/yolov3-tf2.
 
-Se ha utilizado Python 3.7 y Tensorflow 2.0-beta
+This project is capable to remove objects in images and video.
+
+Python 3.7 and Tensorflow 2.0-beta have been used in this project.
 
 
-## ¿Cómo funciona?
+## How does it work?
 
-Se han combinado YOLO con Pix2Pix para eliminar personas de las fotos. Para ello, se ha tomado una red YOLO preentrenada
-que se encarga de detectar los objetos de las imágenes (generando una _bounding box_ a su alrededor) y se ha utiilizado después 
-una Pix2Pix que ha aprendido a rellenar huecos en el centro de las imágenes, tomando como referencia las imágenes sin agujero:
-1. YOLO detecta los objetos
-2. Se toma una subimagen con cada uno de los objetos, añadiendo píxeles a su alrededor
-3. De cada subimagen se elimina a la persona, que se encuentra en el centro, y posteriormente se envía al generador de Pix2Pix para 
-que rellene a partir de los píxeles que quedan.
+YOLO has been combined with Pix2Pix. A pre-trained YOLO network has been used for object detection (generating a bounding
+box around them), and its output is fed to a Pix2Pix's generator that has learned how to fill holes in the center of images,
+using the images without holes as a reference:
+1. YOLO detects the objects
+2. A subimage of every object is taken, adding the pixels around it
+3. Out of every subimage, the center pixels are removed (replaced by ones) and the result is sent to the generator, whose
+task is to fill it with the surrounding pixels.
 
-Con el objeto de ilustrar el proceso de entrenamiento de Pix2Pix, se pueden observar las siguientes imágenes, en las que
-se ha generado un agujero y el generador ha aprendido a rellenarlo.
+In order to illustrate the training process of Pix2Pix, the following images can be observed. A hole has been drilled and 
+the generator has learnt how to fill it.
+
 ![p2p_fill_1](https://github.com/javirk/Person_remover/blob/master/images_readme/fill_1.png)
 ![p2p_fill_2](https://github.com/javirk/Person_remover/blob/master/images_readme/fill_2.png)
 
-Estas instrucciones te ayudarán a entrenar un modelo en tu máquina local. Sin embargo, los datos de entrenamiento que se han utilizado
-para Pix2Pix [no son públicos](http://graphics.cs.cmu.edu/projects/whatMakesParis/). Este conjunto consta de 14900 imágenes
-256x256x3. El código se encarga de crear un agujero en el centro de las imágenes y aprender a rellenarlo con los datos
-que hay alrededor.
+These instructions will you train a model in your local machine. However, the training dataset that has been used for 
+Pix2Pix are not [publicly available](http://graphics.cs.cmu.edu/projects/whatMakesParis/). This dataset consists of 14900,
+256x256x3 images. The code handles the creation of a hole in the center of the images and learns how to fill it with the
+surrounding data.
 
-### Requisitos
+### Requisites
 
-Para utilizar el programa necesitarás Python 3.7 y los paquetes especificados en el archivo `requirements.txt`.
+In order to use the program Python 3.7 and the libraries specified in  `requirements.txt` should be installed.
 
-### Instalación
+### Installation
 
-Clonar el repositorio
+Clone the repository
 ```
 git clone https://github.com/javirk/Person_remover.git
 ```
-Entrar en la carpeta `./yolo`, descargar los pesos de YOLO, convertirlos y moverlos a la carpeta `./yolo/data`
+Download and save the YOLO weights in the folder `./yolo`, convert them and move them to `./yolo/data`
 ```
 wget https://pjreddie.com/media/files/yolov3.weights -O data/yolov3.weights
 python convert.py
 ```
-Descargar los pesos de Pix2Pix de [Google Drive](https://drive.google.com/open?id=19VsarMcYRNPLTDr6b6ABJyY8JUeBueL8) y
-colocarlos en `./pix2pix/checkpoint/`.
+Download the weights for Pix2Pix from [Google Drive](https://drive.google.com/open?id=19VsarMcYRNPLTDr6b6ABJyY8JUeBueL8)
+and put them in `./pix2pix/checkpoint/`.
 
-Para sacar resultados de imágenes tan solo hay que ejecutar el archivo `person_remover.py`:
+To get results of images, run `person_remover.py`:
 ```
 python person_remover.py -i /ruta/a/imagenes/input
 ``` 
-
-En un vídeo, por el contrario:
+In a video, in contrast:
 ```
 python person_remover.py -v /ruta/a/video
 ``` 
-
-También es posible especificar el tipo de objeto a eliminar (por defecto serán las personas, mochilas y bolsos). Para hacer
-esto:
+It is also possible to specify the type of object to remove (people, bags and handbags are chosen by default):
 ```
 python person_remover.py -i /ruta/a/imagenes/input -ob 1 2 3
 ``` 
+Which will remove the objects specified as 1, 2 and 3 (starting from 0) that appear in the file `yolo/data/coco.names`,
+which means bikes, cars and motorbikes.
 
-Lo que eliminará los objetos especificados como 1, 2 y 3 (empezando desde 0) que aparecen en el archivo `yolo/data/coco.names`.
-Es decir, bicicletas, coches y motos.
+### Training
 
-### Entrenamiento
+YOLO network is taken pretrained. For Pix2Pix networks, the training has spanned 23 epochs in a dataset of 14900 training
+and 100 test images using the default parameters. It is worth noticing that the training process is extremely sensitive,
+so the best results might not come in the first run.
 
-La red YOLO se tomó preentrenada. Las redes que formaban parte del Pix2Pix han sido entrenadas durante 23 épocas en un
-conjunto de 14900 imágenes de entrenamiento y 100 de test con los parámetros por defecto de Pix2Pix. Nótese que el entrenamiento
-es tremendamente sensible, por lo que pueden no obtenerse los mejores resultados a la primera prueba.
-
-Para ejecutar el entrenamiento con los parámetros por defecto, tras haber descargado los archivos:
+Training with the default parameters is performed as follows:
 ```
 python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/imagenes/test -mode /test
 ```
 
-## Eliminación en imágenes
+## Image removal
 
 ![p2p_fill_3](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen6.png)
 ![p2p_fill_4](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen7.png)
@@ -89,30 +88,30 @@ python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/i
 ![p2p_fill_10](https://github.com/javirk/Person_remover/blob/master/images_readme/Imagen8.png)
 
 
-## Eliminación en vídeo
+## Video removal
 
-Se ha utilizado un [vídeo de las calles de París](https://www.youtube.com/watch?v=_dRjY9gMcxE). El resultado completo está disponible
-para su descarga en [este enlace](https://drive.google.com/open?id=1V0i64yh_b3aTlijVbfNEtYNLFiy30QjQ) de Google Drive.
+[A walking tour of Paris video](https://www.youtube.com/watch?v=_dRjY9gMcxE) has been used. The complete result is 
+available for download in [this link](https://drive.google.com/open?id=1V0i64yh_b3aTlijVbfNEtYNLFiy30QjQ) of Google Drive.
 
 ![p2p_fill_11](https://github.com/javirk/Person_remover/blob/master/images_readme/GIF.gif)
 
-## Próximos pasos
+## Next steps
 
-Los resultados se pueden mejorar eliminando la red YOLO (detectora de objetos) por una red segmentadora. Así, el generador 
-solo tendria que rellenar la parte correspondiente a la persona, no toda la _bounding box_. Por motivos de tiempo y capacidad
-de procesamiento no se ha podido realizar.
+Results can be improved replacing the object detector network (YOLO) by a semantic segmentator. In this way, the generator
+will have to fill just the part relative to the person, not the whole bounding box. Due to a matter of time and processing
+capacity, this improvement could not be developed yet.
 
-Modificación de Pix2Pix por una arquitectura más avanzada, como Pix2PixHD.
+Modification of Pix2Pix by a more advanced architecture, such as Pix2PixHD.
 
-## Autor
+## Author
 
-* **Javier Gamazo** - *Trabajo inicial* - [Github](https://github.com/javirk). [LinkedIn](https://www.linkedin.com/in/javier-gamazo-tejero/)
+* **Javier Gamazo** - *Initial work* - [Github](https://github.com/javirk). [LinkedIn](https://www.linkedin.com/in/javier-gamazo-tejero/)
 
-## Licencia
+## License
 
-Este proyecto tiene licencia MIT. Ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
+This project is under MIT license. See [LICENSE.md](LICENSE.md) for more details.
 
-## Agradecimientos
+## Acknowledgments
 
-* [zzh8829](https://github.com/zzh8829/yolov3-tf2) por el código de YOLO
-* [Tensorflow](https://www.tensorflow.org/) por el código de Pix2Pix
+* [zzh8829](https://github.com/zzh8829/yolov3-tf2) for YOLO's code
+* [Tensorflow](https://www.tensorflow.org/) for Pix2Pix' code
