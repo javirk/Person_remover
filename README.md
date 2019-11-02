@@ -2,13 +2,13 @@
 
 Versión en español disponible [aquí](README_es.md).
 
-Would you like to travel to a turistic spot and yet appear alone in the photos? 
+Would you like to travel to a touristic spot and yet appear alone in the photos? 
 
 _Person remover_ is a project that combines Pix2Pix and YOLO arhitectures in order to remove people or other objects from
-photos.For Pix2Pix, the code from [Tensorflow](https://www.tensorflow.org/beta/tutorials/generative/pix2pix) has been adapted,
+photos. For Pix2Pix, the code from [Tensorflow](https://www.tensorflow.org/beta/tutorials/generative/pix2pix) has been adapted,
 whereas for YOLO, the code has been adapted from https://github.com/zzh8829/yolov3-tf2.
 
-This project is capable to remove objects in images and video.
+This project is capable of removing objects in images and video.
 
 Python 3.7 and Tensorflow 2.0-beta have been used in this project.
 
@@ -54,18 +54,18 @@ and put them in `./pix2pix/checkpoint/`.
 
 To get results of images, run `person_remover.py`:
 ```
-python person_remover.py -i /ruta/a/imagenes/input
+python person_remover.py -i /dir/of/input/images
 ``` 
 In a video, in contrast:
 ```
-python person_remover.py -v /ruta/a/video
+python person_remover.py -v /dir/of/video
 ``` 
 It is also possible to specify the type of object to remove (people, bags and handbags are chosen by default):
 ```
-python person_remover.py -i /ruta/a/imagenes/input -ob 1 2 3
+python person_remover.py -i /dir/to/input/images -ob 1 2 3
 ``` 
-Which will remove the objects specified as 1, 2 and 3 (starting from 0) that appear in the file `yolo/data/coco.names`,
-which means bikes, cars and motorbikes.
+Which will remove the objects specified as 1, 2 and 3 (starting from 0) that appear in the file `yolo/data/coco.names`.
+In this case bikes, cars and motorbikes.
 
 ### Training
 
@@ -75,7 +75,7 @@ so the best results might not come in the first run.
 
 Training with the default parameters is performed as follows:
 ```
-python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/imagenes/test -mode /test
+python image_inpainting.py -train /dir/of/training/images -test /dir/of/test/images -mode /test
 ```
 
 ## Image removal
@@ -92,8 +92,7 @@ python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/i
 
 ## Video removal
 
-[A walking tour of Paris video](https://www.youtube.com/watch?v=_dRjY9gMcxE) has been used. The complete result is 
-available for download in [this link](https://drive.google.com/open?id=1V0i64yh_b3aTlijVbfNEtYNLFiy30QjQ) of Google Drive.
+[A walking tour of Paris video](https://www.youtube.com/watch?v=_dRjY9gMcxE) has been used.
 
 ![p2p_fill_11](https://github.com/javirk/Person_remover/blob/master/images_readme/GIF.gif)
 
