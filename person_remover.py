@@ -50,7 +50,7 @@ if __name__ == '__main__':
             final_image = create_new_image(image, output_yolo, p2p, FLAGS.objects)
             if os.path.isfile(FLAGS.image_output_path + '/' + file):
                 os.remove(FLAGS.image_output_path + '/' + file)
-            plt.imsave(f'{FLAGS.image_output_path}/{file}', final_image*0.5+0.5)
+            plt.imsave(f'{FLAGS.image_output_path}/{file}', final_image * 0.5 + 0.5)
 
     elif FLAGS.video_path:
         print(FLAGS.video_path)
