@@ -75,7 +75,7 @@ so the best results might not come in the first run.
 
 Training with the default parameters is performed as follows:
 ```
-python image_inpainting.py -train /dir/of/training/images -test /dir/of/test/images -mode /test
+python image_inpainting.py -train /dir/of/training/images -test /dir/of/test/images -mode /train
 ```
 
 ## Image removal

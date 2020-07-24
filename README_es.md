@@ -78,7 +78,7 @@ es tremendamente sensible, por lo que pueden no obtenerse los mejores resultados
 
 Para ejecutar el entrenamiento con los parámetros por defecto, tras haber descargado los archivos:
 ```
-python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/imagenes/test -mode /test
+python image_inpainting.py -train /ruta/a/imagenes/entrenamiento -test /ruta/a/imagenes/test -mode /train
 ```
 
 ## Eliminación en imágenes
