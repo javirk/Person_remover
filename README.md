@@ -12,6 +12,8 @@ This project is capable of removing objects in images and video.
 
 Python 3.7 and Tensorflow 2.0-beta have been used in this project.
 
+#### Try it in [Google Colab](https://colab.research.google.com/drive/1JDpH8MAjaKoekQ_H9ZaxYJ9_axiDtDGm?usp=sharing).
+
 
 ## How does it work?
 
