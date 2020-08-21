@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Pix2Pix:
     def __init__(self, mode, train_dataset=False, test_dataset=False, LAMBDA=100, epochs=25, checkpoint_dir='',
-                 restore_check=False, test_samples=''):
+                 restore_check=False, test_samples='', for_tflite=False):
         self.mode = mode
         self.OUTPUT_CHANNELS = 3
         if self.mode == 'train' or self.mode == 'test':
@@ -44,9 +44,10 @@ class Pix2Pix:
 
         else:
             # This is PRODUCTION
+            size = 256 if for_tflite else None
             self.loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
             self.generator_optimizer, self.discriminator_optimizer = self.optimizers()
-            self.generator = self.Generator()
+            self.generator = self.Generator(size)
             self.discriminator = self.Discriminator()
             self.checkpoint, self.checkpoint_prefix = self.create_checkpoints(checkpoint_dir)
             self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)).expect_partial()
@@ -72,6 +73,7 @@ class Pix2Pix:
 
         if apply_batchnorm:
             result.add(tf.keras.layers.BatchNormalization())
+            result.add(tf.keras.layers.Lambda(lambda x: tf.where(tf.math.is_nan(x), tf.zeros_like(x), x)))
 
         result.add(tf.keras.layers.LeakyReLU())
 
@@ -89,6 +91,7 @@ class Pix2Pix:
                                             use_bias=False))
 
         result.add(tf.keras.layers.BatchNormalization())
+        result.add(tf.keras.layers.Lambda(lambda x: tf.where(tf.math.is_nan(x), tf.zeros_like(x), x)))
 
         if apply_dropout:
             result.add(tf.keras.layers.Dropout(0.5))
@@ -97,7 +100,7 @@ class Pix2Pix:
 
         return result
 
-    def Generator(self):
+    def Generator(self, size=None):
         down_stack = [
             self.downsample(64, 4, apply_batchnorm=False),  # (bs, 128, 128, 64)
             self.downsample(128, 4),  # (bs, 64, 64, 128)
@@ -127,8 +130,8 @@ class Pix2Pix:
                                                activation='tanh')  # (bs, 256, 256, 3)
 
         concat = tf.keras.layers.Concatenate()
+        inputs = tf.keras.layers.Input(shape=[size, size, 3])
 
-        inputs = tf.keras.layers.Input(shape=[None, None, 3])
         x = inputs
 
         # Downsampling through the model
