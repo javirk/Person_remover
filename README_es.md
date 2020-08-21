@@ -10,8 +10,9 @@ para Yolo, de https://github.com/zzh8829/yolov3-tf2.
 
 Este proyecto es capaz de eliminar objetos tanto en imágenes como en vídeo.
 
-Se ha utilizado Python 3.7 y Tensorflow 2.0-beta
+Se ha utilizado Python 3.7 y Tensorflow 2.0-beta.
 
+#### Pruébalo en [Google Colab](https://colab.research.google.com/drive/1JDpH8MAjaKoekQ_H9ZaxYJ9_axiDtDGm?usp=sharing) (en inglés).
 
 ## ¿Cómo funciona?
 
