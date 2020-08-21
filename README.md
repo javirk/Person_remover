@@ -110,7 +110,7 @@ Modification of Pix2Pix by a more advanced architecture, such as Pix2PixHD.
 
 ## License
 
-This project is under MIT license. See [LICENSE.md](LICENSE.md) for more details.
+This project is under Apache license. See [LICENSE.md](LICENSE.md) for more details.
 
 ## Acknowledgments
 
