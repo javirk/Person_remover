@@ -8,7 +8,6 @@ pix2pix/logs/*
 yolo/*.png
 yolo/*.jpg
 person_detection.py
-main.ipynb
 pix2pix/model/*
 *.tflite
 *.txt
