@@ -2,6 +2,8 @@
 
 Versión en español disponible [aquí](README_es.md).
 
+A better version of this algorithm is available at https://github.com/javirk/Person-remover-partial-convolutions.
+
 Would you like to travel to a touristic spot and yet appear alone in the photos? 
 
 _Person remover_ is a project that combines Pix2Pix and YOLO arhitectures in order to remove people or other objects from
